@@ -1,4 +1,4 @@
-package com.wix.testPuzzle.model
+package com.wix.testPuzzle
 
 object Direction extends Enumeration {
   val UP, RIGHT, DOWN, LEFT = Value

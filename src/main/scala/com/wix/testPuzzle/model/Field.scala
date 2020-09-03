@@ -1,12 +1,12 @@
 package com.wix.testPuzzle.model
 
+import com.wix.testPuzzle.Direction
+
 trait Field {
 
   def isSolved: Boolean
 
   def getCells: Seq[Seq[Int]]
-
-  def moveCell(cellRow: Int, cellColumn: Int, direction: Direction.Value): Boolean
 
   def moveEmptyCell(direction: Direction.Value): Boolean
 }
@@ -60,38 +60,8 @@ private class FieldImplNaive(size: Int = 4, cellsRandomizer: CellsRandomizer) ex
     }
   }
 
-  override def moveCell(cellRow: Int, cellColumn: Int, direction: Direction.Value): Boolean = {
-    import Direction._
-
-    val targetCell: Option[(Int, Int)] = direction match {
-      case UP =>
-        if (cellRow == 0) None
-        else Some(cellRow - 1, cellColumn)
-      case RIGHT =>
-        if (cellColumn == size - 1) None
-        else Some(cellRow, cellColumn + 1)
-      case DOWN =>
-        if (cellRow == size - 1) None
-        else Some(cellRow + 1, cellColumn)
-      case LEFT =>
-        if (cellColumn == 0) None
-        else Some(cellRow, cellColumn - 1)
-    }
-
-    targetCell.exists(cellTuple => {
-      val row = cellTuple._1
-      val column = cellTuple._2
-
-      val tempValue = cells(row)(column)
-      cells(row)(column) = cells(cellRow)(cellColumn)
-      cells(cellRow)(cellColumn) = tempValue
-
-      true
-    })
-  }
-
   def moveEmptyCell(direction: Direction.Value): Boolean = {
-    import Direction._
+    import com.wix.testPuzzle.Direction._
     direction match {
       case UP if cZero.row > 0 =>
         cZero = switchCells(cZero, cZero.prevRow)

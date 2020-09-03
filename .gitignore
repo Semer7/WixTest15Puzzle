@@ -3,3 +3,13 @@
 /target/
 /target/scala-2.13/classes/
 /target/scala-2.13/test-classes/
+.idea/codeStyles/
+.idea/libraries/
+.idea/misc.xml
+.idea/modules.xml
+.idea/modules/
+.idea/sbt.xml
+.idea/scala_compiler.xml
+.idea/uiDesigner.xml
+.idea/vcs.xml
+.idea/

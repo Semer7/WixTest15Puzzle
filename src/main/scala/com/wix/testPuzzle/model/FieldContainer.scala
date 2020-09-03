@@ -1,5 +1,7 @@
 package com.wix.testPuzzle.model
 
+import com.wix.testPuzzle.Direction
+
 class FieldContainer(size: Int = 4) {
 
   private var field: Field = Field(size)
