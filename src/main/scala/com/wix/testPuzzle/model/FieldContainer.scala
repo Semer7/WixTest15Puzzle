@@ -1,0 +1,19 @@
+package com.wix.testPuzzle.model
+
+class FieldContainer(size: Int = 4) {
+
+  private var field: Field = Field(size)
+
+  def getCells: Seq[Seq[Int]] = field.getCells
+
+  def reset(): Unit = {
+    field = Field()
+  }
+
+  def moveEmptyCell(direction: Direction.Value):Boolean = {
+    field.moveEmptyCell(direction)
+  }
+
+  def isSolved: Boolean = field.isSolved
+
+}
