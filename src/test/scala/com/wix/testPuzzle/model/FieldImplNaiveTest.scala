@@ -1,5 +1,6 @@
 package com.wix.testPuzzle.model
 
+import com.wix.testPuzzle.Direction
 import org.scalatest.WordSpecLike
 
 class FieldImplNaiveTest extends WordSpecLike {
@@ -83,102 +84,91 @@ class FieldImplNaiveTest extends WordSpecLike {
     }
   }
 
-  "Swap cells" when {
-    val cellsRandomizer = CellsRandomizerImpl
-    val testObject = new FieldImplNaive(4, cellsRandomizer = cellsRandomizer)
+  "Move empty cell" when {
 
     "top left cell" should  {
-      val sourceCell = (0, 0)
+      val cellsRandomizer = new CellsRandomizer {
+        override protected def getRandomUniqueInts(elementsQuantity: Int, existing: Seq[Int]): Seq[Int] = 0 until 16
+
+        override protected def isSolvable(size: Int, elementsQuantity: Int, elems: Seq[Int]): Boolean = true
+      }
+      val testObject = Field(4, cellsRandomizer).asInstanceOf[FieldImplNaive]
 
       "up not allowed" in {
+        val testObject = Field(4, cellsRandomizer).asInstanceOf[FieldImplNaive]
         val direction = Direction.UP
 
-        assert(!testObject.moveCell(sourceCell._1, sourceCell._2, direction))
+        assert(!testObject.moveEmptyCell(direction))
       }
 
       "right" in {
+        val testObject = Field(4, cellsRandomizer).asInstanceOf[FieldImplNaive]
         val direction = Direction.RIGHT
 
-        val getSourceCellValue = () => testObject.cells(sourceCell._1)(sourceCell._2)
-        val getTargeCellValue = () => testObject.cells(0)(1)
-
-        val movedCellValue = getSourceCellValue()
-        val targetCellValue = getTargeCellValue()
-
-        assert(testObject.moveCell(sourceCell._1, sourceCell._2, direction))
-
-        assert(getSourceCellValue() == targetCellValue)
-        assert(getTargeCellValue() == movedCellValue)
+        assert(testObject.moveEmptyCell(direction))
+        assert(findZeroCell(testObject.cells) == Coordinates(0, 1))
       }
 
       "down" in {
+        val testObject = Field(4, cellsRandomizer).asInstanceOf[FieldImplNaive]
         val direction = Direction.DOWN
 
-        val getSourceCellValue = () => testObject.cells(sourceCell._1)(sourceCell._2)
-        val getTargeCellValue = () => testObject.cells(1)(0)
-
-        val movedCellValue = getSourceCellValue()
-        val targetCellValue = getTargeCellValue()
-
-        assert(testObject.moveCell(sourceCell._1, sourceCell._2, direction))
-
-        assert(getSourceCellValue() == targetCellValue)
-        assert(getTargeCellValue() == movedCellValue)
+        assert(testObject.moveEmptyCell(direction))
+        assert(findZeroCell(testObject.cells) == Coordinates(1, 0))
       }
 
       "left not allowed" in {
-        val direction = Direction.UP
+        val testObject = Field(4, cellsRandomizer).asInstanceOf[FieldImplNaive]
+        val direction = Direction.LEFT
 
-        assert(!testObject.moveCell(sourceCell._1, sourceCell._2, direction))
+        assert(!testObject.moveEmptyCell(direction))
       }
 
 
     }
 
     "bottom right cell" should {
-      val sourceCell = (3, 3)
+      val cellsRandomizer = new CellsRandomizer {
+        override protected def getRandomUniqueInts(elementsQuantity: Int, existing: Seq[Int]): Seq[Int] = 15 to 0 by -1
+
+        override protected def isSolvable(size: Int, elementsQuantity: Int, elems: Seq[Int]): Boolean = true
+      }
 
       "up" in {
+        val testObject = Field(4, cellsRandomizer).asInstanceOf[FieldImplNaive]
         val direction = Direction.UP
 
-        val getSourceCellValue = () => testObject.cells(sourceCell._1)(sourceCell._2)
-        val getTargeCellValue = () => testObject.cells(2)(3)
-
-        val movedCellValue = getSourceCellValue()
-        val targetCellValue = getTargeCellValue()
-
-        assert(testObject.moveCell(sourceCell._1, sourceCell._2, direction))
-
-        assert(getSourceCellValue() == targetCellValue)
-        assert(getTargeCellValue() == movedCellValue)
+        assert(testObject.moveEmptyCell(direction))
+        assert(findZeroCell(testObject.cells) == Coordinates(2, 3))
       }
 
       "right not allowed" in {
+        val testObject = Field(4, cellsRandomizer).asInstanceOf[FieldImplNaive]
         val direction = Direction.RIGHT
 
-        assert(!testObject.moveCell(sourceCell._1, sourceCell._2, direction))
+        assert(!testObject.moveEmptyCell(direction))
       }
 
       "down not allowed" in {
+        val testObject = Field(4, cellsRandomizer).asInstanceOf[FieldImplNaive]
         val direction = Direction.DOWN
 
-        assert(!testObject.moveCell(sourceCell._1, sourceCell._2, direction))
+        assert(!testObject.moveEmptyCell(direction))
       }
 
       "left" in {
+        val testObject = Field(4, cellsRandomizer).asInstanceOf[FieldImplNaive]
         val direction = Direction.LEFT
 
-        val getSourceCellValue = () => testObject.cells(sourceCell._1)(sourceCell._2)
-        val getTargeCellValue = () => testObject.cells(3)(2)
-
-        val movedCellValue = getSourceCellValue()
-        val targetCellValue = getTargeCellValue()
-
-        assert(testObject.moveCell(sourceCell._1, sourceCell._2, direction))
-
-        assert(getSourceCellValue() == targetCellValue)
-        assert(getTargeCellValue() == movedCellValue)
+        assert(testObject.moveEmptyCell(direction))
+        assert(findZeroCell(testObject.cells) == Coordinates(3, 2))
       }
     }
+  }
+
+  def findZeroCell(array: Array[Array[Int]]): Coordinates = {
+    val (columnWithZero, row) = array.zipWithIndex.filter(tuple => tuple._1.contains(0)).head
+
+    Coordinates(row, columnWithZero.zipWithIndex.filter(_._1 == 0).head._2)
   }
 }
